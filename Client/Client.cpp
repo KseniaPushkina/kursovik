@@ -18,30 +18,31 @@ string CheckClient::get_sha256(string mess)
 	return hash;
 }
 
-bool CheckClient::check_license(string id, string pass)
+bool CheckClient::check_license(string id, string nomer)
 {
 	// Обработка ошибок
-	if(id.empty() || pass.empty())
+	if(id.empty() || nomer.empty())
 		throw CCError("Empty string");
 	for(auto s : id)
-		if(s < 49 || s > 57)
+		
+		if(s < 48 || s > 57)
 			throw CCError("Invalid character");
 	
-	if(pass.length() < 3)
-		throw CCError("Short password");
-	for(auto s : pass)
+	if(nomer.length() < 3)
+		throw CCError("Short nomer");
+	for(auto s : nomer)
 		if(s < 0 || s > 127)
 			throw CCError("Invalid character");
 	
 	
-	string idpass = id + "/" + pass;//Составление пароля
-	idpass = get_sha256(idpass);
+	string idnomer = id + "/" + nomer;//Составление пароля
+	idnomer = get_sha256(idnomer);
 	
-	//Запись хеша пароля и логина в буфер для отправки серверу
-	size_t size = idpass.size();//размер строки
+	//Запись хеша номера и логина в буфер для отправки серверу
+	size_t size = idnomer.size();//размер строки
 	char self_bufer[256] = {0};
 	for(size_t i = 0; i < size; i++) {
-		self_bufer[i] = idpass[i];
+		self_bufer[i] = idnomer[i];
 	}
 
 	//Создание и заполнение структуры с адресом
@@ -62,7 +63,7 @@ bool CheckClient::check_license(string id, string pass)
 	if (connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
 		throw CCError("Connection Failed");
 
-	//Отправка серверу хеша от пароля и id
+	//Отправка серверу хеша от номера и id
 	send(sock, self_bufer, sizeof(self_bufer), 0); 
 
 	//Получение ответа
@@ -70,3 +71,4 @@ bool CheckClient::check_license(string id, string pass)
 	int valread = read(sock, &answer, sizeof(answer));
 	return (bool)answer;
 }
+
