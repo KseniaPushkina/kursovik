@@ -4,13 +4,13 @@ using namespace std;
 int main (int argc, char **argv)
 {
 	try {
-		string ID, Pass;
-		cout << "Введите логин и пароль" << endl;
+		string ID, nomer;
+		cout << "Введите логин и номер лицензии" << endl;
 		cin >> ID;
-		cin >> Pass;
+		cin >> nomer;
 		
 		CheckClient obj;
-		if (!obj.check_license(ID, Pass))
+		if (!obj.check_license(ID, nomer))
 			cout << "Invalid license" << endl;
 		else
 			cout << "Valid license" << endl;
