@@ -20,16 +20,16 @@ struct ServerConfig {
 	int port = 44177;//адрес порта (число)
 };
 
-//Класс проверяющий пароль по базе данных
+//Класс проверяющий номер по базе данных
 class DB
 {
 private:
-	string idpass;
+	string idnomer;
 	string database_path;
 public:
 	DB(string database_path, const string IDPASS)
 	{
-		this->idpass = IDPASS;
+		this->idnomer = IDPASS;
 		this->database_path = database_path;
 	}
 	bool check()
@@ -44,7 +44,7 @@ public:
 		string ch;
 		while (true) {
 			file >> ch;//Читать строку из БД
-			if (ch == idpass) {//Сравнивать хеш с этой строкой
+			if (ch == idnomer) {//Сравнивать хеш с этой строкой
 				return true;
 			}
 			if (file.eof()) {//Если конец файла, вернуть false
@@ -93,11 +93,10 @@ int main (int argc, char **argv)
 			cerr << "fork abort" << endl;
 		if (pid == 0) {
 			close( ls );
-			char *remote_bufer = new char[256];//Буфер для записи Id и пароля, отправленного сервером
-			int rv = recv(rc,remote_bufer,256,0);//Принять Id, пароль
-			if (rv < 0)
+			char *remote_bufer = new char[256];//Буфер для записи Id и номера, отправленного сервером
+			int rv = recv(rc,remote_bufer,256,0);//Принять Id, номер
 				cerr << "recv failed" << endl;
-			string str = string(remote_bufer);//Перевести отправленные Id и пароль в строку
+			string str = string(remote_bufer);//Перевести отправленные Id и номер в строку
 			DB x(config.database_path, str);//В качестве параметров класс с портом и адресом файла
 			bool result = x.check();//Проверка лицензии
 			unsigned char res_buf = result ? 1 : 0;
