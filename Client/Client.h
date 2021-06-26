@@ -17,7 +17,7 @@ private:
 	int port = 44177;
 public:
 	string get_sha256(string mess);
-	bool check_license(string id, string pass);
+	bool check_license(string id, string nomer);
 };
 
 
